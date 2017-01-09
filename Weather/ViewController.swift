@@ -9,10 +9,15 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    let apiKey = "897828dded8aeb4097d9af5b68b9c754"
+    var url = "http://api.openweathermap.org/data/2.5/weather?q="
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        getTemperature(city: "Moscow")
     }
 
     override func didReceiveMemoryWarning() {
@@ -21,5 +26,27 @@ class ViewController: UIViewController {
     }
 
 
+    // MARK: Get temperature for city
+    func getTemperature(city: String) {
+        
+        let tempPath = url + city + "&appid=" + apiKey
+        let tempUrl = URL(string: tempPath)
+        
+        URLSession.shared.dataTask(with:tempUrl!) { (data, response, error) in
+            if error != nil {
+                print(error ?? "url error")
+            } else {
+                do {
+                    
+                    let parsedData = try JSONSerialization.jsonObject(with: data!, options: []) as! [String:Any]
+                    let weather = Weather(weatherJson: parsedData as NSDictionary)
+                    
+                } catch let error as NSError {
+                    print(error)
+                }
+            }
+            
+            }.resume()
+    }
 }
 
