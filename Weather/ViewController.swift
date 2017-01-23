@@ -6,10 +6,12 @@
 //  Copyright © 2017 A.V. All rights reserved.
 //
 
+import Foundation
 import UIKit
 
 class ViewController: UIViewController {
     
+    @IBOutlet weak var iconImageView: UIImageView!
     let apiKey = "897828dded8aeb4097d9af5b68b9c754"
     var url = "http://api.openweathermap.org/data/2.5/weather?q="
 
@@ -39,7 +41,11 @@ class ViewController: UIViewController {
                 do {
                     
                     let parsedData = try JSONSerialization.jsonObject(with: data!, options: []) as! [String:Any]
-                    let weather = Weather(weatherJson: parsedData as NSDictionary)
+                    let weather = Weather(weatherJson: parsedData)
+
+                    DispatchQueue.main.async {
+                        self.iconImageView.image = weather.icon
+                    }
                     
                 } catch let error as NSError {
                     print(error)
